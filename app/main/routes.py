@@ -8,6 +8,11 @@ from app import db
 from sqlalchemy import func
 
 @bp.route('/')
+def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+    return redirect(url_for('auth.login'))
+
 @bp.route('/dashboard')
 @login_required
 def dashboard():
