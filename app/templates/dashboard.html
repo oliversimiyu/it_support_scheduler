@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">Welcome, {{ current_user.username }}!</h1>
+            <p class="lead">
+                {% if current_user.is_admin %}
+                    Admin Dashboard
+                {% else %}
+                    Team Member Dashboard
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-calendar-check me-2"></i>
+                        Total Upcoming Shifts
+                    </h5>
+                    <p class="card-text display-6">{{ total_shifts }}</p>
+                </div>
+            </div>
+        </div>
+        {% for shift_type, count in shifts_per_type.items() %}
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-clock me-2"></i>
+                        {{ shift_type }} Shifts
+                    </h5>
+                    <p class="card-text display-6">{{ count }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Today's Shifts -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar-day me-2"></i>
+                        Today's Shifts
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if todays_shifts %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Shift</th>
+                                    <th>Team Member</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for shift in todays_shifts %}
+                                <tr>
+                                    <td>{{ shift.shift_type }}</td>
+                                    <td>{{ shift.team_member.name }}</td>
+                                    <td>{{ shift.team_member.role }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No shifts scheduled for today.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if current_user.is_admin %}
+    <!-- Team Members Section (Admin Only) -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-users me-2"></i>
+                        Team Members
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if team_members %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Availability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for member in team_members %}
+                                <tr>
+                                    <td>{{ member.name }}</td>
+                                    <td>{{ member.role }}</td>
+                                    <td>{{ member.availability }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No team members found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- My Upcoming Shifts (Team Member Only) -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        My Upcoming Shifts
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if my_shifts %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Shift</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for shift in my_shifts %}
+                                <tr>
+                                    <td>{{ shift.date.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ shift.shift_type }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No upcoming shifts scheduled.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Upcoming Shifts -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar-week me-2"></i>
+                        Upcoming Shifts (Next 7 Days)
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_shifts %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Shift</th>
+                                    <th>Team Member</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for shift in upcoming_shifts %}
+                                <tr>
+                                    <td>{{ shift.date.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ shift.shift_type }}</td>
+                                    <td>{{ shift.team_member.name }}</td>
+                                    <td>{{ shift.team_member.role }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No upcoming shifts scheduled.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

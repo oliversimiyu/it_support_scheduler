@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Register
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form action="" method="post" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">{{ form.username.label }}</label>
+                            {{ form.username(class="form-control") }}
+                            {% for error in form.username.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">{{ form.email.label }}</label>
+                            {{ form.email(class="form-control") }}
+                            {% for error in form.email.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">{{ form.password.label }}</label>
+                            {{ form.password(class="form-control") }}
+                            {% for error in form.password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="password2" class="form-label">{{ form.password2.label }}</label>
+                            {{ form.password2(class="form-control") }}
+                            {% for error in form.password2.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="team_member" class="form-label">{{ form.team_member.label }}</label>
+                            {{ form.team_member(class="form-control") }}
+                            {% for error in form.team_member.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                            <small class="text-muted">
+                                Select your name if you are a team member, or "Not a team member" if you are an administrator.
+                            </small>
+                        </div>
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <p class="mb-0">
+                        Already have an account? 
+                        <a href="{{ url_for('auth.login') }}">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+/* Custom styles for IT Support Scheduler */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand i {
+    color: #ffc107;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    padding: 1.5rem;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-footer {
+    background-color: #fff;
+    border-top: 1px solid rgba(0,0,0,.125);
+    padding: 1rem;
+}
+
+.shift-card {
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.shift-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.shift-morning {
+    border-left-color: #28a745 !important;
+}
+
+.shift-afternoon {
+    border-left-color: #ffc107 !important;
+}
+
+.shift-night {
+    border-left-color: #6610f2 !important;
+}
+
+.team-member-badge {
+    font-weight: normal;
+    letter-spacing: 0.5px;
+}
+
+.team-member-badge small {
+    opacity: 0.8;
+}
+
+.schedule-header {
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 2px solid #dee2e6;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.footer {
+    border-top: 1px solid #dee2e6;
+}
+
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Custom colors */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+}

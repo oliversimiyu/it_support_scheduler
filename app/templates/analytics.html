@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-chart-pie me-2"></i>
+                Analytics Dashboard
+            </h1>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Shift Distribution -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Shift Distribution
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="shiftDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Member Workload -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Team Member Workload
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="teamMemberChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Distribution -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar-week me-2"></i>
+                        Weekly Distribution
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="weeklyDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Shift Distribution Pie Chart
+    const shiftCtx = document.getElementById('shiftDistributionChart').getContext('2d');
+    new Chart(shiftCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ shift_types | tojson }},
+            datasets: [{
+                data: {{ shift_counts | tojson }},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                title: {
+                    display: true,
+                    text: 'Distribution of Shift Types'
+                }
+            }
+        }
+    });
+
+    // Team Member Bar Chart
+    const teamCtx = document.getElementById('teamMemberChart').getContext('2d');
+    new Chart(teamCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ member_names | tojson }},
+            datasets: [{
+                label: 'Number of Shifts',
+                data: {{ member_shift_counts | tojson }},
+                backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Shifts per Team Member'
+                }
+            }
+        }
+    });
+
+    // Weekly Distribution Line Chart
+    const weeklyCtx = document.getElementById('weeklyDistributionChart').getContext('2d');
+    new Chart(weeklyCtx, {
+        type: 'line',
+        data: {
+            labels: {{ days | tojson }},
+            datasets: [{
+                label: 'Number of Shifts',
+                data: {{ day_counts | tojson }},
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1,
+                backgroundColor: 'rgba(75, 192, 192, 0.8)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Shifts by Day of Week'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+database:
+  path: data/scheduler.db
+
+shifts:
+  types:
+    - Morning
+    - Afternoon
+    - Night
+  hours:
+    Morning: "06:00-14:00"
+    Afternoon: "14:00-22:00"
+    Night: "22:00-06:00"
+
+rules:
+  min_rest_hours: 12
+  max_consecutive_days: 5
+  max_night_shifts_per_week: 3
+
+notifications:
+  enabled: true
+  advance_notice_days: 7

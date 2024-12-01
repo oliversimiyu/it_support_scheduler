@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <h1 class="display-4 mb-4">Welcome to IT Support Scheduler</h1>
+        <p class="lead mb-4">Efficiently manage your IT support team's schedule with our easy-to-use platform.</p>
+        
+        {% if current_user.is_authenticated %}
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-6">
+                <div class="d-grid gap-3">
+                    <a href="{{ url_for('main.schedule') }}" class="btn btn-primary btn-lg">View Schedule</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="d-grid gap-3">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">Register</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h3 class="card-title">Easy Scheduling</h3>
+                <p class="card-text">Create and manage support schedules with just a few clicks.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h3 class="card-title">Team Management</h3>
+                <p class="card-text">Add team members and manage their availability efficiently.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h3 class="card-title">Schedule Overview</h3>
+                <p class="card-text">Get a clear view of your support schedule at a glance.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
