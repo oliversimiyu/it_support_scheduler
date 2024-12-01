@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Profile Settings</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <p class="form-control-static">{{ team_member.name }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <p class="form-control-static">{{ team_member.role }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <p class="form-control-static">{{ current_user.email }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Availability Settings</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('user.update_availability') }}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="mb-3">
+                            <label class="form-label">Available Days</label>
+                            {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                            {% set current_availability = team_member.availability.split(',') %}
+                            {% for day in days %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="availability[]" 
+                                       value="{{ day }}" id="day-{{ day }}"
+                                       {% if day in current_availability %}checked{% endif %}>
+                                <label class="form-check-label" for="day-{{ day }}">
+                                    {{ day }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Availability</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

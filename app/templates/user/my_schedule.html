@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}My Schedule{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Schedule</h1>
+        <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+
+    {% if shifts %}
+        {% for month, month_shifts in shifts_by_month.items() %}
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">{{ month }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>Shift Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for shift in month_shifts %}
+                            <tr>
+                                <td>{{ shift.date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ shift.date.strftime('%A') }}</td>
+                                <td>
+                                    <span class="badge {% if shift.shift_type == 'Morning' %}bg-primary{% elif shift.shift_type == 'Afternoon' %}bg-success{% else %}bg-info{% endif %}">
+                                        {{ shift.shift_type }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if shift.date < today %}
+                                    <span class="badge bg-secondary">Completed</span>
+                                    {% elif shift.date == today %}
+                                    <span class="badge bg-warning text-dark">Today</span>
+                                    {% else %}
+                                    <span class="badge bg-primary">Upcoming</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                <h3 class="text-muted">No Upcoming Shifts</h3>
+                <p class="text-muted">You don't have any shifts scheduled at the moment.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .badge {
+        font-size: 0.9em;
+        padding: 0.5em 0.8em;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}

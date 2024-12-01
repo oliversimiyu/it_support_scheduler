@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}Register{% endblock %}
-
 {% block content %}
 <div class="container mt-4">
-    <div class="row justify-content-center">
+    <div class="row">
+        <!-- Create Admin Form -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h4 class="card-title mb-0">
-                        <i class="fas fa-user-plus me-2"></i>
-                        Register
+                        <i class="fas fa-user-shield me-2"></i>
+                        Create New Admin
                     </h4>
                 </div>
                 <div class="card-body">
@@ -44,26 +43,45 @@
                             <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
-                        <div class="mb-3">
-                            <label for="team_member" class="form-label">{{ form.team_member.label }}</label>
-                            {{ form.team_member(class="form-control") }}
-                            {% for error in form.team_member.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                            <small class="text-muted">
-                                Select your name if you are a team member, or "Not a team member" if you are a regular user.
-                            </small>
-                        </div>
                         <div class="d-grid">
                             {{ form.submit(class="btn btn-primary") }}
                         </div>
                     </form>
                 </div>
-                <div class="card-footer text-center">
-                    <p class="mb-0">
-                        Already have an account? 
-                        <a href="{{ url_for('auth.user_login') }}">Sign In</a>
-                    </p>
+            </div>
+        </div>
+
+        <!-- Admin List -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-users-cog me-2"></i>
+                        Current Admins
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for admin in admin_users %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">{{ admin.username }}</h6>
+                                <small class="text-muted">{{ admin.email }}</small>
+                            </div>
+                            {% if admin != current_user %}
+                            <form action="{{ url_for('admin.remove_admin', user_id=admin.id) }}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm" 
+                                        onclick="return confirm('Are you sure you want to remove admin privileges from {{ admin.username }}?')">
+                                    <i class="fas fa-user-minus"></i>
+                                    Remove
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="badge bg-secondary">Current User</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>

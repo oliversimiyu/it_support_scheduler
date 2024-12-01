@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Admin Dashboard</h1>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <h2 class="card-text">{{ total_users }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Team Members</h5>
+                    <h2 class="card-text">{{ total_team_members }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Shifts</h5>
+                    <h2 class="card-text">{{ total_shifts }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('admin.manage_users') }}" class="btn btn-primary btn-block">
+                                <i class="fas fa-users"></i> Manage Users
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('admin.manage_team') }}" class="btn btn-success btn-block">
+                                <i class="fas fa-user-tie"></i> Manage Team
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('admin.schedule_management') }}" class="btn btn-info btn-block">
+                                <i class="fas fa-calendar-alt"></i> Schedule Management
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('admin.reports') }}" class="btn btn-warning btn-block">
+                                <i class="fas fa-chart-bar"></i> View Reports
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Shifts -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Shifts</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Team Member</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for shift in recent_shifts %}
+                                <tr>
+                                    <td>{{ shift.date.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ shift.shift_type }}</td>
+                                    <td>{{ shift.team_member.name }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Shift Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="shiftDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Shift Distribution Chart
+    var ctx = document.getElementById('shiftDistributionChart').getContext('2d');
+    var shiftDistribution = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: [{% for shift_type, count in shift_distribution %}'{{ shift_type }}',{% endfor %}],
+            datasets: [{
+                data: [{% for shift_type, count in shift_distribution %}{{ count }},{% endfor %}],
+                backgroundColor: ['#007bff', '#28a745', '#17a2b8']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

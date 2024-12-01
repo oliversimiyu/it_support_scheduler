@@ -6,7 +6,7 @@ from flask_wtf.csrf import CSRFProtect
 
 db = SQLAlchemy()
 login = LoginManager()
-login.login_view = 'auth.login'
+login.login_view = 'auth.user_login'
 csrf = CSRFProtect()
 
 def create_app(config_class=Config):
@@ -22,6 +22,12 @@ def create_app(config_class=Config):
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
+
+    from app.admin import bp as admin_bp
+    app.register_blueprint(admin_bp)
+
+    from app.user import bp as user_bp
+    app.register_blueprint(user_bp)
 
     return app
 

@@ -12,7 +12,11 @@
         <div class="row justify-content-center mb-4">
             <div class="col-md-6">
                 <div class="d-grid gap-3">
-                    <a href="{{ url_for('main.schedule') }}" class="btn btn-primary btn-lg">View Schedule</a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-danger btn-lg">Admin Dashboard</a>
+                    {% else %}
+                    <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary btn-lg">My Dashboard</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -20,8 +24,27 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="d-grid gap-3">
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Login</a>
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">Register</a>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title">Team Member Login</h4>
+                            <p class="card-text">Access your schedule and manage your availability</p>
+                            <a href="{{ url_for('auth.user_login') }}" class="btn btn-primary btn-lg">User Login</a>
+                        </div>
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title">Administrator Login</h4>
+                            <p class="card-text">Manage team members and schedules</p>
+                            <a href="{{ url_for('auth.admin_login') }}" class="btn btn-danger btn-lg">Admin Login</a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">New User?</h4>
+                            <p class="card-text">Create your account to get started</p>
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">Register</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Shift Distribution -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Shift Distribution
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="shiftDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Member Workload -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Team Member Workload
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="workloadChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Statistics -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-calendar-check me-2"></i>
+                        Monthly Statistics
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Total Shifts</th>
+                                    <th>Morning Shifts</th>
+                                    <th>Afternoon Shifts</th>
+                                    <th>Night Shifts</th>
+                                    <th>Team Members Active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in monthly_stats %}
+                                <tr>
+                                    <td>{{ stat.month }}</td>
+                                    <td>{{ stat.total_shifts }}</td>
+                                    <td>{{ stat.morning_shifts }}</td>
+                                    <td>{{ stat.afternoon_shifts }}</td>
+                                    <td>{{ stat.night_shifts }}</td>
+                                    <td>{{ stat.active_members }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Shift Distribution Chart
+    var shiftCtx = document.getElementById('shiftDistributionChart').getContext('2d');
+    var shiftDistribution = new Chart(shiftCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Morning', 'Afternoon', 'Night'],
+            datasets: [{
+                data: {{ shift_distribution|tojson }},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)'
+                ]
+            }]
+        }
+    });
+
+    // Team Member Workload Chart
+    var workloadCtx = document.getElementById('workloadChart').getContext('2d');
+    var workloadChart = new Chart(workloadCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ workload_labels|tojson }},
+            datasets: [{
+                label: 'Shifts Assigned',
+                data: {{ workload_data|tojson }},
+                backgroundColor: 'rgba(75, 192, 192, 0.8)'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

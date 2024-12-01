@@ -10,8 +10,10 @@ from sqlalchemy import func
 @bp.route('/')
 def index():
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
-    return redirect(url_for('auth.login'))
+        if current_user.is_admin:
+            return redirect(url_for('admin.dashboard'))
+        return redirect(url_for('user.dashboard'))
+    return redirect(url_for('auth.user_login'))
 
 @bp.route('/dashboard')
 @login_required

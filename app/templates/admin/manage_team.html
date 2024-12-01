@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Team{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Team Members List -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-user-tie me-2"></i>
+                        Team Members
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>User Account</th>
+                                    <th>Total Shifts</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for member in team_members %}
+                                <tr>
+                                    <td>{{ member.name }}</td>
+                                    <td>{{ member.role }}</td>
+                                    <td>
+                                        {% if member.user %}
+                                            {{ member.user.email }}
+                                        {% else %}
+                                            <span class="text-warning">No account</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ member.shifts|length }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editMemberModal{{ member.id }}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteMemberModal{{ member.id }}">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Edit Member Modal -->
+                                <div class="modal fade" id="editMemberModal{{ member.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-warning text-dark">
+                                                <h5 class="modal-title">Edit Team Member</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{ url_for('admin.edit_team_member', member_id=member.id) }}" method="post">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Name</label>
+                                                        <input type="text" class="form-control" name="name" value="{{ member.name }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Role</label>
+                                                        <input type="text" class="form-control" name="role" value="{{ member.role }}" required>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-warning">Save Changes</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Delete Member Modal -->
+                                <div class="modal fade" id="deleteMemberModal{{ member.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title">Delete Team Member</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Are you sure you want to delete team member {{ member.name }}?</p>
+                                                <p class="text-danger"><strong>This will also delete all associated shifts.</strong></p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{{ url_for('admin.delete_team_member', member_id=member.id) }}" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-danger">Delete Member</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add New Team Member -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Add Team Member
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('admin.add_team_member') }}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Role</label>
+                            <input type="text" class="form-control" name="role" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus me-2"></i>
+                                Add Member
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

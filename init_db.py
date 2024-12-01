@@ -34,12 +34,14 @@ def init_database():
             TeamMember(
                 name='John Smith',
                 role='Senior Support Engineer',
-                availability='Monday,Tuesday,Wednesday,Thursday,Friday'
+                availability='Monday,Tuesday,Wednesday,Thursday,Friday',
+                user_id=admin.id  # Link to admin user
             ),
             TeamMember(
                 name='Sarah Johnson',
                 role='Support Engineer',
-                availability='Monday,Tuesday,Wednesday,Thursday,Friday'
+                availability='Monday,Tuesday,Wednesday,Thursday,Friday',
+                user_id=user.id  # Link to regular user
             ),
             TeamMember(
                 name='Mike Wilson',
