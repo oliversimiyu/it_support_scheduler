@@ -143,3 +143,85 @@ def analytics():
                          member_shift_counts=member_shift_counts,
                          days=days,
                          day_counts=day_counts)
+
+@bp.route('/assign_shift', methods=['POST'])
+@login_required
+def assign_shift():
+    if not current_user.is_admin:
+        return jsonify({'success': False, 'message': 'Permission denied'}), 403
+    
+    try:
+        # Get form data
+        team_member_id = request.form.get('team_member')
+        date_str = request.form.get('date')
+        shift_type = request.form.get('shift_type')
+        
+        # Validate data
+        if not all([team_member_id, date_str, shift_type]):
+            return jsonify({'success': False, 'message': 'All fields are required'}), 400
+        
+        # Parse date
+        try:
+            shift_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({'success': False, 'message': 'Invalid date format'}), 400
+        
+        # Check if date is not in past
+        if shift_date < datetime.now().date():
+            return jsonify({'success': False, 'message': 'Cannot assign shifts in the past'}), 400
+        
+        # Check if shift already exists
+        existing_shift = Shift.query.filter_by(
+            date=shift_date,
+            shift_type=shift_type
+        ).first()
+        
+        if existing_shift:
+            return jsonify({
+                'success': False,
+                'message': f'A shift already exists for {shift_type} on {date_str}'
+            }), 400
+        
+        # Create new shift
+        shift = Shift(
+            team_member_id=team_member_id,
+            date=shift_date,
+            shift_type=shift_type
+        )
+        
+        db.session.add(shift)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Shift assigned successfully'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Error assigning shift: {str(e)}'
+        }), 500
+
+@bp.route('/delete_shift/<int:shift_id>', methods=['POST'])
+@login_required
+def delete_shift(shift_id):
+    if not current_user.is_admin:
+        return jsonify({'success': False, 'message': 'Permission denied'}), 403
+    
+    shift = Shift.query.get_or_404(shift_id)
+    try:
+        db.session.delete(shift)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@bp.context_processor
+def inject_team_members():
+    """Inject team members into all templates."""
+    if current_user.is_authenticated and current_user.is_admin:
+        return {'team_members': TeamMember.query.all()}
+    return {'team_members': []}
