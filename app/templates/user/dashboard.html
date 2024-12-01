@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Welcome, {{ current_user.username }}!</h1>
+    
+    {% if team_member %}
+    <!-- Team Member Information -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Your Profile</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> {{ team_member.name }}</p>
+                            <p><strong>Role:</strong> {{ team_member.role }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Availability:</strong> {{ team_member.availability }}</p>
+                            <a href="{{ url_for('user.profile') }}" class="btn btn-primary">
+                                <i class="fas fa-user-edit"></i> Edit Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Shifts -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Your Upcoming Shifts</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_shifts %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Shift Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for shift in upcoming_shifts %}
+                                <tr>
+                                    <td>{{ shift.date.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ shift.shift_type }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No upcoming shifts scheduled.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <h4 class="alert-heading">Welcome to the IT Support Scheduler!</h4>
+        <p>You are not currently assigned as a team member. If you believe this is an error, please contact your administrator.</p>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar-alt fa-3x mb-3 text-primary"></i>
+                    <h5 class="card-title">My Schedule</h5>
+                    <p class="card-text">View and manage your upcoming shifts</p>
+                    <a href="{{ url_for('user.my_schedule') }}" class="btn btn-primary">View Schedule</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title">Team Schedule</h5>
+                    <p class="card-text">View the entire team's schedule</p>
+                    <a href="{{ url_for('user.team_schedule') }}" class="btn btn-success">View Team Schedule</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-cog fa-3x mb-3 text-info"></i>
+                    <h5 class="card-title">Profile Settings</h5>
+                    <p class="card-text">Update your profile and availability</p>
+                    <a href="{{ url_for('user.profile') }}" class="btn btn-info">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
